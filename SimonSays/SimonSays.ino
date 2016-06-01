@@ -1,7 +1,7 @@
  //Simon Says
- //led pin
- int ledPin;
- //Buttons
+//led pin
+int ledPin;
+//Buttons
 int blueButton = 7;
 int yellowButton = 6;
 int redButton = 5;
@@ -16,15 +16,16 @@ int green;
 //lets try setting a flag to stop the blinking
 bool done = false;
 bool flag = false;
-//Check User Input
-bool check1 = false;
-//Array to collect the led pins randomly generated
-const int MAX_PINS = 3;
+//hold boolean
+bool ch;
+//Array to collect the led pin numbers
+const int MAX_PINS = 4;
 int pins[MAX_PINS];
-//Array to collect the leds the user chose
-const int MAX_INPUTS = 3;
-int userPins[MAX_INPUTS];
-
+//Array to collect the button numbers
+const int MAX_USER_LEDS = 4;
+int userLeds[MAX_USER_LEDS];
+//variable to hold index user led number
+int x = 0;
 void setup() {
   //random number generator
   randomSeed(analogRead(0));
@@ -48,7 +49,7 @@ for (ledPin = 10; ledPin < 14; ledPin++)
 }
 delay(1000);
 //Serial port test
-//Serial.begin(9600);
+Serial.begin(9600);
 }
 void Blue_Button()
 {
@@ -57,13 +58,19 @@ void Blue_Button()
   //If blue button is pressed
   if (blue == HIGH)
   {
+    //for contact balance
+    delay(150);
     //turn it on
     digitalWrite(ledPin, HIGH);
-    //delay(50);
+    //collect led user chose
+    userLeds[x] = ledPin;
+    //Serial.print(x);
+    x++;
   }
   else
   {
     digitalWrite(ledPin, LOW);
+    //delay(100);
   }
   
 }
@@ -73,12 +80,16 @@ void Yellow_Button()
   yellow = digitalRead(yellowButton);
   if (yellow == HIGH)
   {
+    delay(150);
     digitalWrite(ledPin, HIGH);
-    //delay(50);
+    userLeds[x] = ledPin;
+    //Serial.print(x);
+    x++;
   }
   else
   {
     digitalWrite(ledPin, LOW);
+    //delay(100);
   }
 }
 void Red_Button()
@@ -87,38 +98,51 @@ void Red_Button()
   red = digitalRead(redButton);
   if (red == HIGH)
   {
+    delay(150);
     digitalWrite(ledPin, HIGH);
-    
+    userLeds[x] = ledPin;
+    //Serial.print(x);
+    x++;
   }
   else
   {
     digitalWrite(ledPin, LOW);
+    //delay(100);
   }
 }
 void Green_Button()
 {
+  delay(150);
   ledPin = 10;
   green = digitalRead(greenButton);
   if (green == HIGH)
   {
     digitalWrite(ledPin, HIGH);
+    userLeds[x] = ledPin;
+    //Serial.print(x);
+    x++;
   }
   else
   {
     digitalWrite(ledPin, LOW);
+    //delay(100);
   }
 }
-//Not sure if this will work
-bool Check1()
+//check user input NOT WORKING
+bool check1()
 {
+  bool correct = true;
   for (int i = 0; i < 4; i++)
   {
-    if (pins[i] != userPins[i])
+    if (pins[i] != userLeds[i])
     {
-      return false; 
+      correct = false;
+      return correct;
     }
   }
+  return correct;
 }
+
 void loop() {
   // put your main code here, to run repeatedly:
 //First Challange (easy)
@@ -130,32 +154,30 @@ if (!done)
     digitalWrite(ledPin, HIGH);
     delay(1000);
     digitalWrite(ledPin, LOW);
+    delay(1000);
     //store pin numbers into the array
     pins[blinkTimes] = ledPin;
   }
   done = true;
 }
-do
-{
   Blue_Button();
   Yellow_Button();
   Red_Button();
   Green_Button();
-}while(!check1);
-
-/*
-//Grab the status of the blue button
-blue = digitalRead(blueButton);
-if (blue == HIGH)
+//Check if user input is correct
+if (x >= 4)
 {
-  ledPin = 13;
-  digitalWrite(ledPin, LOW);
-}
-else if (blue == LOW)
+  ch = check1();
+  if (ch == false)
   {
-   ledPin = 13;
-   digitalWrite(ledPin, LOW);
+    Serial.print("Wrong!");
   }
-  */
+  else
+  {
+    Serial.print("Correct!");
+  }
+  //Print out 1 if correct and 0 if wrong
+ // Serial.print(ch);
+  x = 0;
 }
-
+}
