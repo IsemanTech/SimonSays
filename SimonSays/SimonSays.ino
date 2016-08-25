@@ -1,7 +1,10 @@
+//Author: Iseman Johnson last updated: 08/25/2016
 #include <cVector.h>
 #include <EasyIO.h>
 
-int levelMax = 4;
+const int LevelMax = 11;
+int level = 1;
+
 
 int chosenLed;
 
@@ -20,7 +23,7 @@ bool done1 = false;
 bool correct;
 
 EasyIO game;
-cVector vecPins;
+cVector ranPins;
 cVector userPins;
 
  
@@ -48,17 +51,17 @@ delay(300);
 game.turnAllOff(gLed, bLed);
 }
 
-void Level1()
+void SimonSays()
 {
   //First Challange (easy)
-  if (!done1)
+  while (level < LevelMax)
   {
-    for (int count = 0; count < levelMax; count++)
+    for (int count = 0; count < level; count++)
     {
       delay(500);
       chosenLed = random(gLed, bLed + 1);
       //Serial.print(chosenLed);
-      vecPins.push_back(chosenLed);
+      ranPins.push_back(chosenLed);
       digitalWrite(chosenLed, HIGH);
       delay(500);
       digitalWrite(chosenLed, LOW);
@@ -66,7 +69,6 @@ void Level1()
       UserInput();
       clearLeds();
       Check();
-      done1 = true;
   }
 }
 
@@ -104,16 +106,16 @@ void UserInput()
       Serial.print(" ");
       Serial.print(gLed);
     }
- }while(count < levelMax);
+ }while(count < level);
 }
 
 bool Check()
 {
   //true until proven false
   correct = true;
-  for (int i = 0; i < levelMax; i++)
+  for (int i = 0; i < level; i++)
   {
-    if (vecPins[i]!= userPins[i])
+    if (ranPins[i]!= userPins[i])
     {
       correct = false;
       
@@ -127,13 +129,19 @@ bool Check()
   if (correct == true)
   {
     correctShow();
+    level++;
   }
   else
+  {
     wrongShow();
+    level = 100;
+  }
 }
 void clearLeds()
 {
   game.turnAllOff(gLed, bLed);
+  userPins.clearAll();
+  ranPins.clearAll();
 }
 
 void correctShow()
@@ -169,7 +177,5 @@ void wrongShow()
 void loop() 
 {
   // put your main code here, to run repeatedly:
-  Level1();
-
-
+  SimonSays();
 }
