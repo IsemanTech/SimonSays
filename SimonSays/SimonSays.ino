@@ -43,9 +43,9 @@ game.initButton(gButton);
 Serial.begin(9600);
 
 //Intro to setup complete
-game.turnAllOn(8, 13);
+game.turnAllOn(gLed, bLed);
 delay(300);
-game.turnAllOff(8, 13);
+game.turnAllOff(gLed, bLed);
 }
 
 void Level1()
@@ -56,7 +56,7 @@ void Level1()
     for (int count = 0; count < levelMax; count++)
     {
       delay(500);
-      chosenLed = random(8, 13);
+      chosenLed = random(gLed, bLed + 1);
       //Serial.print(chosenLed);
       vecPins.push_back(chosenLed);
       digitalWrite(chosenLed, HIGH);
