@@ -4,7 +4,9 @@ I will upload a schematic when I have more time. For now please look at the top 
 port numbers I assigned or simply change the pin values to what you prefer.
 
 This is currently still in development
-It only has 1 level called "levelMax" to set how many leds will light up in one stage for now. I will make more stages.
+It only has 10 levels.  To increase or decrease it, change the LevelMax variable.
+
+I plan on  adding sound when i get the time and also a start button.
 
 Requirements:
 
