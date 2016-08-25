@@ -1,183 +1,175 @@
- //Simon Says
-//led pin
-int ledPin;
-//Buttons
-int blueButton = 7;
-int yellowButton = 6;
-int redButton = 5;
-int greenButton = 4;
-//times the leds will blink
-int blinkTimes;
-//button states
-int blue;
-int yellow;
-int red;
-int green;
-//lets try setting a flag to stop the blinking
-bool done = false;
-bool flag = false;
-//hold boolean
-bool ch;
-//Array to collect the led pin numbers
-const int MAX_PINS = 4;
-int pins[MAX_PINS];
-//Array to collect the button numbers
-const int MAX_USER_LEDS = 4;
-int userLeds[MAX_USER_LEDS];
-//variable to hold index user led number
-int x = 0;
+#include <cVector.h>
+#include <EasyIO.h>
+
+int levelMax = 4;
+
+int chosenLed;
+
+int bLed = 12;
+int yLed = 11;
+int rLed = 10;
+int gLed = 9;
+
+int bButton = 7;
+int yButton = 6;
+int rButton = 5;
+int gButton = 4;
+
+//flags
+bool done1 = false;
+bool correct;
+
+EasyIO game;
+cVector vecPins;
+cVector userPins;
+
+ 
 void setup() {
   //random number generator
   randomSeed(analogRead(0));
-//LEDS
-for (int ledPin = 10; ledPin < 14; ledPin++)
-{
-  pinMode(ledPin, OUTPUT);
-}
-//Set push buttons to input
-pinMode(blueButton, INPUT);
-pinMode(yellowButton, INPUT);
-pinMode(redButton, INPUT);
-pinMode(greenButton, INPUT);
-
-//Signal that the game has started
-for (ledPin = 10; ledPin < 14; ledPin++)
-{ 
- digitalWrite(ledPin, HIGH);
- delay(50);
- digitalWrite(ledPin, LOW);
-}
-delay(1000);
-//Serial port test
-Serial.begin(9600);
-}
-void Blue_Button()
-{
-  ledPin = 13;
-  blue = digitalRead(blueButton);
-  //If blue button is pressed
-  if (blue == HIGH)
-  {
-    //for contact balance
-    delay(150);
-    //turn it on
-    digitalWrite(ledPin, HIGH);
-    //collect led user chose
-    userLeds[x] = ledPin;
-    //Serial.print(x);
-    x++;
-  }
-  else
-  {
-    digitalWrite(ledPin, LOW);
-    //delay(100);
-  }
   
+//Initialize Leds and push buttons 
+game.initLed(bLed);
+game.initLed(yLed);
+game.initLed(rLed);
+game.initLed(gLed);
+
+game.initButton(bButton);
+game.initButton(yButton);
+game.initButton(rButton);
+game.initButton(gButton);
+
+//Using Serial for debug purposes
+Serial.begin(9600);
+
+//Intro to setup complete
+game.turnAllOn(8, 13);
+delay(300);
+game.turnAllOff(8, 13);
 }
-void Yellow_Button()
+
+void Level1()
 {
-  ledPin = 12;
-  yellow = digitalRead(yellowButton);
-  if (yellow == HIGH)
+  //First Challange (easy)
+  if (!done1)
   {
-    delay(150);
-    digitalWrite(ledPin, HIGH);
-    userLeds[x] = ledPin;
-    //Serial.print(x);
-    x++;
-  }
-  else
-  {
-    digitalWrite(ledPin, LOW);
-    //delay(100);
-  }
-}
-void Red_Button()
-{
-  ledPin = 11;
-  red = digitalRead(redButton);
-  if (red == HIGH)
-  {
-    delay(150);
-    digitalWrite(ledPin, HIGH);
-    userLeds[x] = ledPin;
-    //Serial.print(x);
-    x++;
-  }
-  else
-  {
-    digitalWrite(ledPin, LOW);
-    //delay(100);
-  }
-}
-void Green_Button()
-{
-  delay(150);
-  ledPin = 10;
-  green = digitalRead(greenButton);
-  if (green == HIGH)
-  {
-    digitalWrite(ledPin, HIGH);
-    userLeds[x] = ledPin;
-    //Serial.print(x);
-    x++;
-  }
-  else
-  {
-    digitalWrite(ledPin, LOW);
-    //delay(100);
+    for (int count = 0; count < levelMax; count++)
+    {
+      delay(500);
+      chosenLed = random(8, 13);
+      //Serial.print(chosenLed);
+      vecPins.push_back(chosenLed);
+      digitalWrite(chosenLed, HIGH);
+      delay(500);
+      digitalWrite(chosenLed, LOW);
+    }
+      UserInput();
+      clearLeds();
+      Check();
+      done1 = true;
   }
 }
-//check user input NOT WORKING
-bool check1()
+
+void UserInput()
 {
-  bool correct = true;
-  for (int i = 0; i < 4; i++)
+  int count = 0;
+ do
+ {
+    
+    if (game.pushTurnOn(bLed, bButton))
+    {
+      count++;
+      userPins.push_back(bLed);
+      Serial.print(" ");
+      Serial.print(bLed);
+  } 
+  if (game.pushTurnOn(yLed, yButton))
+    {
+      count++;
+      userPins.push_back(yLed);
+      Serial.print(" ");
+      Serial.print(yLed);
+    }
+  if (game.pushTurnOn(rLed, rButton))
+    {
+      count++;
+      userPins.push_back(rLed);
+      Serial.print(" ");
+      Serial.print(rLed);
+    }
+  if (game.pushTurnOn(gLed, gButton))
+    {
+      count++;
+      userPins.push_back(gLed);
+      Serial.print(" ");
+      Serial.print(gLed);
+    }
+ }while(count < levelMax);
+}
+
+bool Check()
+{
+  //true until proven false
+  correct = true;
+  for (int i = 0; i < levelMax; i++)
   {
-    if (pins[i] != userLeds[i])
+    if (vecPins[i]!= userPins[i])
     {
       correct = false;
-      return correct;
+      
     }
+    
   }
-  return correct;
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-//First Challange (easy)
-if (!done)
-{
-  for (blinkTimes = 0; blinkTimes < 4; blinkTimes++)
+  
+  Serial.print(" ");
+  Serial.print(correct);
+ 
+  if (correct == true)
   {
-    ledPin = random(10, 14);
-    digitalWrite(ledPin, HIGH);
-    delay(1000);
-    digitalWrite(ledPin, LOW);
-    delay(1000);
-    //store pin numbers into the array
-    pins[blinkTimes] = ledPin;
-  }
-  done = true;
-}
-  Blue_Button();
-  Yellow_Button();
-  Red_Button();
-  Green_Button();
-//Check if user input is correct
-if (x >= 4)
-{
-  ch = check1();
-  if (ch == false)
-  {
-    Serial.print("Wrong!");
+    correctShow();
   }
   else
-  {
-    Serial.print("Correct!");
-  }
-  //Print out 1 if correct and 0 if wrong
- // Serial.print(ch);
-  x = 0;
+    wrongShow();
 }
+void clearLeds()
+{
+  game.turnAllOff(gLed, bLed);
+}
+
+void correctShow()
+{
+  game.turnAllOn(gLed, bLed);
+  delay(300);
+  game.turnAllOff(gLed, bLed);
+  delay(300);
+  game.turnAllOn(gLed, bLed);
+  delay(300);
+  game.turnAllOff(gLed, bLed);
+  
+}
+
+void wrongShow()
+{
+  digitalWrite(gLed, HIGH);
+  delay(150);
+  digitalWrite(gLed, LOW);
+  delay(150);
+  digitalWrite(rLed, HIGH);
+  delay(150);
+  digitalWrite(rLed, LOW);
+  delay(150);
+  digitalWrite(yLed,HIGH);
+  delay(150);
+  digitalWrite(yLed, LOW);
+  delay(150);
+  digitalWrite(bLed, HIGH);
+  delay(300);
+  digitalWrite(bLed, LOW);
+}
+void loop() 
+{
+  // put your main code here, to run repeatedly:
+  Level1();
+
+
 }
