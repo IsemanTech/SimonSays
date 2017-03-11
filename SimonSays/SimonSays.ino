@@ -1,4 +1,4 @@
-//Author: Iseman Johnson last updated: 08/25/2016
+//Author: Iseman Johnson last updated: 02/11/2017
 #include <cVector.h>
 #include <EasyIO.h>
 
@@ -18,9 +18,14 @@ int yButton = 6;
 int rButton = 5;
 int gButton = 4;
 
+//speaker
+int spin = 3;
+
 //flags
 bool done1 = false;
 bool correct;
+//Tones E Note
+
 
 EasyIO game;
 cVector ranPins;
@@ -63,11 +68,30 @@ void SimonSays()
       //Serial.print(chosenLed);
       ranPins.push_back(chosenLed);
       digitalWrite(chosenLed, HIGH);
+      if (chosenLed == bLed)
+      {
+        tone(spin, 200, 50);
+      }
+      if (chosenLed == yLed)
+      {
+        tone(spin, 250, 50);
+      }
+      if (chosenLed == rLed)
+      {
+        tone(spin, 300, 50);
+      }
+      if (chosenLed == gLed)
+      {
+        tone(spin, 350, 50);
+      }
+      //tone(spin, 390, 50);
       delay(500);
+      noTone(spin);
       digitalWrite(chosenLed, LOW);
     }
       UserInput();
       clearLeds();
+      delay(150);
       Check();
   }
 }
@@ -84,6 +108,8 @@ void UserInput()
       userPins.push_back(bLed);
       Serial.print(" ");
       Serial.print(bLed);
+      tone(spin, 200, 50);
+      
   } 
   if (game.pushTurnOn(yLed, yButton))
     {
@@ -91,6 +117,7 @@ void UserInput()
       userPins.push_back(yLed);
       Serial.print(" ");
       Serial.print(yLed);
+      tone(spin, 250, 50);
     }
   if (game.pushTurnOn(rLed, rButton))
     {
@@ -98,6 +125,7 @@ void UserInput()
       userPins.push_back(rLed);
       Serial.print(" ");
       Serial.print(rLed);
+      tone(spin, 300, 50);
     }
   if (game.pushTurnOn(gLed, gButton))
     {
@@ -105,7 +133,10 @@ void UserInput()
       userPins.push_back(gLed);
       Serial.print(" ");
       Serial.print(gLed);
+      tone(spin, 350, 50);
     }
+    delay(150);
+    noTone(spin);
  }while(count < level);
 }
 
@@ -147,32 +178,48 @@ void clearLeds()
 void correctShow()
 {
   game.turnAllOn(gLed, bLed);
-  delay(300);
+  tone(spin, 780, 90);
+  delay(200);
   game.turnAllOff(gLed, bLed);
-  delay(300);
+  noTone(spin);
+  delay(200);
   game.turnAllOn(gLed, bLed);
-  delay(300);
+  tone(spin, 780, 90);
+  delay(200);
   game.turnAllOff(gLed, bLed);
+  noTone(spin);
   
 }
 
 void wrongShow()
 {
   digitalWrite(gLed, HIGH);
+  tone(spin, 250);
   delay(150);
   digitalWrite(gLed, LOW);
+  noTone(spin);
   delay(150);
   digitalWrite(rLed, HIGH);
+  tone(spin, 200);
   delay(150);
   digitalWrite(rLed, LOW);
+  noTone(spin);
   delay(150);
   digitalWrite(yLed,HIGH);
+  tone(spin, 150);
   delay(150);
   digitalWrite(yLed, LOW);
+  noTone(spin);
   delay(150);
   digitalWrite(bLed, HIGH);
+  tone(spin, 100);
   delay(300);
   digitalWrite(bLed, LOW);
+  noTone(spin);
+}
+void showlevel()
+{
+  /*print the level number to the lcd screen to show the player*/
 }
 void loop() 
 {
