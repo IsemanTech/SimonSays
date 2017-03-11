@@ -22,9 +22,8 @@ int gButton = 4;
 int spin = 3;
 
 //flags
-bool done1 = false;
+
 bool correct;
-//Tones E Note
 
 
 EasyIO game;
