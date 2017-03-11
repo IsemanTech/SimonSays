@@ -57,7 +57,6 @@ game.turnAllOff(gLed, bLed);
 
 void SimonSays()
 {
-  //First Challange (easy)
   while (level < LevelMax)
   {
     for (int count = 0; count < level; count++)
