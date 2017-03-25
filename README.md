@@ -6,9 +6,9 @@ port numbers I assigned or simply change the pin values to what you prefer.
 This is currently still in development
 It only has 10 levels.  To increase or decrease it, change the LevelMax variable.
 
-I plan on  adding sound when i get the time and also a start button.
+Sound has been added! Just hook up a speaker!
 
-Requirements:
+download and include the following libraries in the arduino editor:
 
 1.) My custom vector lib for the Arduino: https://github.com/IsemanTech/cVector
 
