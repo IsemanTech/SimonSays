@@ -1,4 +1,7 @@
 # SimonSays
+
+parallel circuit
+![](https://github.com/izz-j/SimonSays/raw/master/arduino-circuit.gif)
 Simon Says for the Arduino Uno
 I will upload a schematic when I have more time. For now please look at the top of SimonSays source code and connect the pins to the
 port numbers I assigned or simply change the pin values to what you prefer.
